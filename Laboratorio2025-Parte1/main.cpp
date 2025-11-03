@@ -1,97 +1,83 @@
+#include <cstring>
 #include<iostream>
-#include "string.h"
+#include <iomanip>
 #include "estructuras.h"
 #include "prototipos.h"
-#define COMANDO 100
-#define P 4
-
 using namespace std;
 
 int main (int argc, char *argv[]) {
-	Archivo a = NULL;
-	cadena comando = NULL;
-	comando = new char[100];
-	accion opcion;
-	cadena parametro[P];
-	while (strlen(comando)==0){
+	Archivo a = CrearArchivo("curriculum.txt");
+	
+	Cadena comando = new char[100];
+	Cadena parametros[5];
+	
+	
+	while (strlen(comando)==0) {
 		cout << ">";
 		cin.getline(comando,100);
 	}
 	
-	char delim[] = "(\" ,\")";
-	int contador = 0;
-	parametro[contador] = strtok(comando, delim);
-	contador++;
-	parametro[contador] = strtok(NULL, delim);
-	char *version = parametro[1];
-	char *texto = parametro [2];
-	unsigned int nroLinea = atoi(parametro[3]); 
+	char delim[] = "(\",\")";
 	
-	while(parametro[contador] != NULL){
+	int contador = 0;
+	parametros[contador] = strtok(comando,delim);
+	
+	while (parametros[contador]!=NULL && contador<5) {
 		contador++;
-		parametro[contador] = strtok(NULL,delim);
+		parametros[contador] = strtok(NULL,delim);
 	}
 	
-	while(strcmp(parametro[0], "fin")!= 0){
+	opciones opcion;
+	
+	while (strcmp(parametros[0],"salir")!=0) {
 		opcion = error;
-		if(strcmp(comando, "crearArch") == 0){
-			opcion = crearArch;
-		}
+		if (strcmp(parametros[0],"InsertarLinea")==0) {opcion=insertar;}
+		if (strcmp(parametros[0],"BorrarLinea")==0) {opcion=borrarL;}
+		if (strcmp(parametros[0],"MostrarTexto")==0) {opcion=mostrarT;}
+		if (strcmp(parametros[0],"ayuda")==0) {opcion=ayuda;}
+		if (strcmp(parametros[0],"limpiar")==0) {opcion=limpiar;}
 		
-		if(strcmp(parametro[0], "insertarLin") == 0){
-			opcion = insertarLin;
-		}
-		if(strcmp(parametro[0], "eliminarLin") == 0){
-			opcion = eliminarLin;
-		}
-		if(strcmp(parametro[0], "borrarArch") == 0){
-			opcion = borrarArch;
-		}
-		if(strcmp(parametro[0], "mostrar") == 0){
-			opcion = mostrar;
-		}
-		if(strcmp(parametro[0], "ayuda") == 0){
-			opcion = ayuda;
-		}
-		if(strcmp(parametro[0], "limpiar") == 0){
-			opcion = limpiar;
-		}
-		
-		switch(opcion){
-		case crearArch:
-			a = crearArchivo("curriculo.txt");
-			if(a != NULL){
-				cout << a->titulo << endl;
-				cout << "Version: " << a->version << endl;
-				muestroRetorno(OK);
-			}else{
-				muestroRetorno(ERROR);
-			}
+		switch (opcion) {
+		case insertar:
+			muestroRetorno(inserto(a, parametros));
 			break;
-		case insertarLin:
-			muestroRetorno(insertarLinea(a, version, texto, 1));
+			
+		case borrarL:
+			muestroRetorno(borroL(a,parametros));
 			break;
-		case eliminarLin:
-			//muestroRetorno(borrarLinea(a, version, 1));
+			
+		case mostrarT:
+			muestroRetorno(muestroT(a,parametros));
 			break;
-		case borrarArch:
-			muestroRetorno(borrarArchivo(a, version));
-			break;
-		case mostrar:
-			muestroRetorno(mostrarTexto(a, version));
-			break;
-		case limpiar:
-			system("cls");
-			break;
+			
 		case ayuda:
 			help();
 			break;
+			
+		case limpiar:
+			system("clear");
+			break;
+			
 		default:
 			muestroRetorno(ERROR);
 		}
-		cout << ">";
-		cin >> comando;
+		fflush(stdin);
+		strcpy(comando,"");
+		
+		while (strlen(comando)==0) {
+			cout << ">";
+			cin.getline(comando,100);
+		}
+		
+		int contador = 0;
+		parametros[contador] = strtok(comando,delim);
+		
+		while (parametros[contador]!=NULL && contador<5) {
+			contador++;
+			parametros[contador] = strtok(NULL,delim);
+		}
 	}
-	
+	BorrarArchivo(a);
 	return 0;
 }
+
