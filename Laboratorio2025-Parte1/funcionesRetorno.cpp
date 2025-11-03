@@ -1,113 +1,84 @@
 #include<iostream>
+using namespace std;
 #include "string.h"
+#include <iomanip>
 #include "estructuras.h"
 #include "prototipos.h"
-using namespace std;
 
 
-void muestroRetorno(TipoRet retorno){
-	switch(retorno){
-	case OK:
-		cout << "OK";
-		break;
-	case ERROR:
-		cout << "ERROR";
-		break;
-	case NO_IMPLEMENTADO:
-		cout << "NO_IMPLEMENTADO";
-		break;
-	}
-	cout << endl;
-}
-	
-TipoRet insertarLinea(Archivo &a, char * version, char * linea, unsigned int nroLinea) {
-	if (nroLinea == 0 || nroLinea > cantLineas(a)+1) {
+TipoRet inserto(Archivo &a, Cadena parametros[]) {
+	if (a==NULL)
 		return ERROR;
-	}
 	
-	//creo la linea
-	Linea l = new _linea;
-	strcpy(l->texto, linea);
-	l->sig = NULL;
+	Cadena version = new char[100];
+	strcpy(version, parametros[2]);
 	
-	//inserta al principio
-	if (nroLinea == 1) {
-		l->sig = a->contenido;
-		a->contenido = l;
-		actualizarLineas(a);
-		return  OK;
-	}
+	Cadena linea= new char[100];
+	strcpy(linea, parametros[3]);
 	
-	//el for recorre la lista hasta encontrar la posicion de nroLinea
-	// linea anterior es para no perder la lista al insertar en el medio
-	Linea anterior = a->contenido;
-	for (unsigned int i = 1; i < nroLinea-1; i++) {
-		anterior = anterior->sig;
-	}
+	unsigned int nroLinea = atoi(parametros[4]);
 	
-	l->sig = anterior->sig;
-	anterior->sig = l;
-	actualizarLineas(a);
-	return OK;
-}
-	
-TipoRet borrarLinea(Archivo &a, char * version, unsigned int nroLinea){
-
-	return NO_IMPLEMENTADO;
+	return InsertarLinea(a,version,linea,nroLinea);
 }
 
-TipoRet borrarArchivo(Archivo &a, char *version){ 
-	
-	if(a == NULL){
+TipoRet borroL(Archivo &a, Cadena parametros[]) {
+	if (a==NULL)
 		return ERROR;
-	}
+	Cadena version = new char[100];
+	strcpy(version, parametros[2]);
 	
-	Archivo anterior = NULL;
-	Archivo actual = a;
 	
-	while(actual != NULL){
-		if(strcmp(actual->version, version)== 0){
-			if(anterior == NULL){
-				a = actual->sig;
-			}else{
-				anterior->sig = actual -> sig;
-			}
-			delete actual->version;
-			delete actual->contenido;
-			delete actual;
-			
-			return OK;
-		}
-		anterior = actual;
-	}
-	return ERROR;
+	unsigned int nroLinea = atoi(parametros[3]);
+	
+	return BorrarLinea(a, version, nroLinea);
 }
 
-TipoRet mostrarTexto(Archivo a, char * version){
-	if(esVacioArchivo(a)){
-		return ERROR;
-	}
-	//esto nikk es para buscar la version que se pide
-	Archivo actual = a;
-	while(actual != NULL && strcmp(a->version, version)!= 0){
-		actual = actual->sig;
-	}
-	if(actual == NULL){
-		cout << "No se ha encontrado una version" << endl;
-		return ERROR;
-	}
-	cout << a->titulo << " - " << a->version << endl;
-	
-	if(esVaciaLinea(actual->contenido)){
+TipoRet muestroT(Archivo a, Cadena parametros[]) {
+	if (a->contenido==NULL) {
 		cout << "No contiene lineas" << endl;
 		return OK;
 	}
-	//esto te lo copie de tu main ajsdashdjhajs 
-	Linea aux = a->contenido;
-	while (aux != NULL) {
-		cout << aux->nroLinea << '\t' << aux->texto << endl;
-		aux = aux->sig;
+	if (parametros[1]==NULL) {
+		return ERROR;
 	}
+	Cadena version = new char[10];
+	strcpy(version, parametros[2]);
+	return MostrarTexto(a,version);
+}
+
+TipoRet CrearVersion(Archivo &a, char * version){
 	
+	return NO_IMPLEMENTADA;
+}
+
+TipoRet MostrarVersiones(Archivo a){
+	cout << a->titulo << endl;
+	
+	if(a->version == NULL){
+		cout << "No hay versiones creadas" << endl;
+		return OK;
+	}
+	muestroVersion(a->version, 0);
 	return OK;
+}
+	
+TipoRet MostrarCambios(Archivo a, char * version){
+	return NO_IMPLEMENTADA;
+}
+	
+TipoRet Iguales(Archivo a, char * version1, char * version2,bool &iguales){
+	return NO_IMPLEMENTADA;
+}
+	
+void muestroRetorno(_retorno ret){
+	switch (ret){
+	case OK:
+		cout << "OK"<< endl;
+		break;
+	case ERROR:
+		cout << "ERROR" << endl;
+		break;
+	case NO_IMPLEMENTADA:
+		cout << "NO IMPLEMENTADA"<<endl;
+	}
 }
