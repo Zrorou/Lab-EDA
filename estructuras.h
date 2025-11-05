@@ -17,11 +17,11 @@ struct _linea {
 
 typedef _linea* Linea;
 
- struct _version{
+struct _version{
 	Cadena nombreVers;
+	_linea* contenido;
 	_version *hijo = NULL;
 	_version *hermano = NULL;
-	_version *padre = NULL;
 };
 
 typedef struct _version *Version;
@@ -29,17 +29,10 @@ typedef struct _version *Version;
 struct _archivo{
 	Cadena titulo;
 	Version version;
-	_linea* contenido;
 	_archivo* sig;
 };
 
 typedef enum _opciones{
-	insertar, borrarL, mostrarT, ayuda, error, limpiar, salir
+	insertar, borrarL, mostrarT, mostrarV, ayuda, error, limpiar, salir
 }opciones;
 
-
-/******************************************/
-
-typedef _archivo* Archivo;
-
-#endif
